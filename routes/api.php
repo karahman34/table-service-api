@@ -19,9 +19,8 @@ $router->get('/', function () use ($router) {
 
 /*
 |--------------------------------------------------------------------------
-| Application Routes
+| Auth Routes
 |--------------------------------------------------------------------------
-|
 */
 $router->group(['prefix' => 'auth'], function ($router) {
     $router->group(['middleware' => ['guest']], function ($router) {
