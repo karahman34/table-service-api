@@ -52,7 +52,7 @@ class Transformer
      *
      * @return  JsonResponse           
      */
-    public static function fail(string $message, $data = null, int $status = 200, array $headers = [])
+    public static function fail(string $message, $data = null, int $status = 500, array $headers = [])
     {
         return response()->json(
             array_merge(
