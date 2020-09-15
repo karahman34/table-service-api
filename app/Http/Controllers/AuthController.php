@@ -20,15 +20,15 @@ class AuthController extends Controller
     /**
      * Token response structure.
      *
-     * @param   string  $token  
+     * @param   string  $token
      *
-     * @return  array          
+     * @return  array
      */
     private function respondWithToken(string $token)
     {
         return [
             'access_token' => $token,
-            'type' => 'Bearer', 
+            'type' => 'Bearer',
             'expired_in' => auth()->factory()->getTTL(),
         ];
     }
@@ -36,9 +36,9 @@ class AuthController extends Controller
     /**
      * Login user.
      *
-     * @param   Request  $request  
+     * @param   Request  $request
      *
-     * @return  JsonResponse             
+     * @return  JsonResponse
      */
     public function login(Request $request)
     {
@@ -54,11 +54,14 @@ class AuthController extends Controller
                 return Transformer::fail('Invalid login credentials.', null, 401);
             }
 
-            return Transformer::ok('Success to authenticated user.', 
+            return Transformer::ok(
+                'Success to authenticated user.',
                 array_merge(
                     $this->respondWithToken($token),
                     ['user' => new UserResource(auth()->user())]
-                ), 200);
+                ),
+                200
+            );
         } catch (\Throwable $th) {
             return $th;
             return Transformer::fail('Failed to authenticated user.');
@@ -72,10 +75,13 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return Transformer::ok('Success to get user details.', 
+        return Transformer::ok(
+            'Success to get user details.',
             [
                 'user' => new UserResource(auth()->user())
-            ], 200);
+            ],
+            200
+        );
     }
 
     /**
@@ -86,7 +92,7 @@ class AuthController extends Controller
     public function refresh()
     {
         return Transformer::ok(
-            'Success to refresh token.', 
+            'Success to refresh token.',
             $this->respondWithToken(auth()->setTTL($this->token_ttl)->refresh())
         );
     }
