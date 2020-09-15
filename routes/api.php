@@ -2,8 +2,6 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
-use App\Helpers\Transformer;
-
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -17,4 +15,23 @@ use App\Helpers\Transformer;
 
 $router->get('/', function () use ($router) {
     return $router->app->version();
+});
+
+/*
+|--------------------------------------------------------------------------
+| Application Routes
+|--------------------------------------------------------------------------
+|
+*/
+$router->group(['prefix' => 'auth'], function ($router) {
+    $router->group(['middleware' => ['guest']], function ($router) {
+        $router->post('login', 'AuthController@login');
+    });
+
+    $router->group(['middleware' => ['auth']], function ($router) {
+        $router->get('me', 'AuthController@me');
+        
+        $router->post('refresh', 'AuthController@refresh');
+        $router->post('logout', 'AuthController@logout');
+    });
 });
