@@ -52,3 +52,20 @@ $router->group(['prefix' => 'roles', 'middleware' => ['auth']], function ($route
 
     $router->delete('/{id:\d+}', 'RoleController@destroy');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Permission Routes
+|--------------------------------------------------------------------------
+*/
+$router->group(['prefix' => 'permissions', 'middleware' => ['auth']], function ($router) {
+    $router->get('/', 'PermissionController@index');
+    $router->get('/{id:\d+}', 'PermissionController@show');
+
+    $router->post('/', 'PermissionController@store');
+    $router->post('/{id:\d+}/roles', 'PermissionController@syncRoles');
+    
+    $router->patch('/{id:\d+}', 'PermissionController@update');
+
+    $router->delete('/{id:\d+}', 'PermissionController@destroy');
+});
