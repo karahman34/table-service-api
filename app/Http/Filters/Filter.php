@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Filters;
+namespace App\Http\Filters;
 
-use Error;
 use Illuminate\Http\Request;
 
 class Filter

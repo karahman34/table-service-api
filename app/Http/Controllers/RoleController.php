@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Filters\RoleFilter;
 use App\Helpers\Transformer;
+use App\Http\Filters\RoleFilter;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\RolesCollection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

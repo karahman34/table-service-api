@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Filters\PermissionFilter;
 use App\Helpers\Transformer;
+use App\Http\Filters\PermissionFilter;
 use App\Http\Resources\PermissionResource;
 use App\Http\Resources\PermissionsCollection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
