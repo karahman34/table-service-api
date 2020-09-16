@@ -34,3 +34,21 @@ $router->group(['prefix' => 'auth'], function ($router) {
         $router->post('logout', 'AuthController@logout');
     });
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| Role Routes
+|--------------------------------------------------------------------------
+*/
+$router->group(['prefix' => 'roles', 'middleware' => ['auth']], function ($router) {
+    $router->get('/', 'RoleController@index');
+    $router->get('/{id:\d+}', 'RoleController@show');
+
+    $router->post('/', 'RoleController@store');
+    $router->post('/{id:\d+}/permissions', 'RoleController@syncPermissions');
+    
+    $router->patch('/{id:\d+}', 'RoleController@update');
+
+    $router->delete('/{id:\d+}', 'RoleController@destroy');
+});
