@@ -39,6 +39,7 @@ class RolesPermissionsSeeder extends Seeder
             ],
             'customer' => [
                 'food.index', 'food.show',
+                'category.index',
                 'order.create',
             ],
             'owner' => [
