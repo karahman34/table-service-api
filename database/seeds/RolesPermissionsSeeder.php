@@ -59,25 +59,25 @@ class RolesPermissionsSeeder extends Seeder
 
             switch ($roleName) {
                 case 'admin':
-                    $role->permissions()->sync(
+                    $role->syncPermissions(
                         Permission::select('id')->get()->pluck('id')
                     );
                     break;
                 case 'waiter':
                     $permissionsIds = Permission::select('id')->whereIn('name', $permissions['waiter'])->get()->pluck('id');
-                    $role->permissions()->sync($permissionsIds);
+                    $role->syncPermissions($permissionsIds);
                     break;
                 case 'cashier':
                     $permissionsIds = Permission::select('id')->whereIn('name', $permissions['cashier'])->get()->pluck('id');
-                    $role->permissions()->sync($permissionsIds);
+                    $role->syncPermissions($permissionsIds);
                     break;
                 case 'customer':
                     $permissionsIds = Permission::select('id')->whereIn('name', $permissions['customer'])->get()->pluck('id');
-                    $role->permissions()->sync($permissionsIds);
+                    $role->syncPermissions($permissionsIds);
                     break;
                 case 'owner':
                     $permissionsIds = Permission::select('id')->whereIn('name', $permissions['owner'])->get()->pluck('id');
-                    $role->permissions()->sync($permissionsIds);
+                    $role->syncPermissions($permissionsIds);
                     break;
             }
         }

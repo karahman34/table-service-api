@@ -139,7 +139,7 @@ class PermissionController extends Controller
             }
             
             $permission = Permission::findOrFail($id);
-            $permission->roles()->sync($roles_ids);
+            $permission->syncRoles($roles_ids);
             
             return Transformer::ok(
                 'Success to synchronize permission\' roles.',
