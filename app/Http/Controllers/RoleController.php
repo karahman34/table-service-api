@@ -63,7 +63,6 @@ class RoleController extends Controller
             return (new RolesCollection($roles))
                         ->additional(Transformer::meta(true, 'Success to get roles collection.'));
         } catch (\Throwable $th) {
-            return $th;
             return Transformer::fail('Failed to get roles collection.');
         }
     }
