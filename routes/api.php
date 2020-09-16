@@ -42,15 +42,45 @@ $router->group(['prefix' => 'auth'], function ($router) {
 |--------------------------------------------------------------------------
 */
 $router->group(['prefix' => 'roles', 'middleware' => ['auth']], function ($router) {
-    $router->get('/', 'RoleController@index');
-    $router->get('/{id:\d+}', 'RoleController@show');
+    $router->get('/', [
+        'uses' => 'RoleController@index',
+        'middleware' => [
+            'permission:role.index'
+        ]
+    ]);
+    $router->get('/{id:\d+}', [
+        'uses' => 'RoleController@show',
+        'middleware' => [
+            'permission:role.show'
+        ]
+    ]);
 
-    $router->post('/', 'RoleController@store');
-    $router->post('/{id:\d+}/permissions', 'RoleController@syncPermissions');
+    $router->post('/', [
+        'uses' => 'RoleController@store',
+        'middleware' => [
+            'permission:role.create'
+        ]
+    ]);
+    $router->post('/{id:\d+}/permissions', [
+        'uses' => 'RoleController@syncPermissions',
+        'middleware' => [
+            'permission:role.update',
+        ]
+    ]);
     
-    $router->patch('/{id:\d+}', 'RoleController@update');
+    $router->patch('/{id:\d+}', [
+        'uses' => 'RoleController@update',
+        'middleware' => [
+            'permission:role.update',
+        ]
+    ]);
 
-    $router->delete('/{id:\d+}', 'RoleController@destroy');
+    $router->delete('/{id:\d+}', [
+        'uses' => 'RoleController@destroy',
+        'middleware' => [
+            'permission:role.delete'
+        ]
+    ]);
 });
 
 /*
@@ -59,15 +89,45 @@ $router->group(['prefix' => 'roles', 'middleware' => ['auth']], function ($route
 |--------------------------------------------------------------------------
 */
 $router->group(['prefix' => 'permissions', 'middleware' => ['auth']], function ($router) {
-    $router->get('/', 'PermissionController@index');
-    $router->get('/{id:\d+}', 'PermissionController@show');
+    $router->get('/', [
+        'uses' => 'PermissionController@index',
+        'middleware' => [
+            'permission:permission.index'
+        ]
+    ]);
+    $router->get('/{id:\d+}', [
+        'uses' => 'PermissionController@show',
+        'middleware' => [
+            'permission:permission.show'
+        ]
+    ]);
 
-    $router->post('/', 'PermissionController@store');
-    $router->post('/{id:\d+}/roles', 'PermissionController@syncRoles');
+    $router->post('/', [
+        'uses' => 'PermissionController@store',
+        'middleware' => [
+            'permission:permission.create'
+        ]
+    ]);
+    $router->post('/{id:\d+}/roles', [
+        'uses' => 'PermissionController@syncRoles',
+        'middleware' => [
+            'permission:permission.update',
+        ]
+    ]);
     
-    $router->patch('/{id:\d+}', 'PermissionController@update');
+    $router->patch('/{id:\d+}', [
+        'uses' => 'PermissionController@update',
+        'middleware' => [
+            'permission:permission.update',
+        ]
+    ]);
 
-    $router->delete('/{id:\d+}', 'PermissionController@destroy');
+    $router->delete('/{id:\d+}', [
+        'uses' => 'PermissionController@destroy',
+        'middleware' => [
+            'permission:permission.delete'
+        ]
+    ]);
 });
 
 /*
