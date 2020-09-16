@@ -69,3 +69,38 @@ $router->group(['prefix' => 'permissions', 'middleware' => ['auth']], function (
 
     $router->delete('/{id:\d+}', 'PermissionController@destroy');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Category Routes
+|--------------------------------------------------------------------------
+*/
+$router->group(['prefix' => 'categories', 'middleware' => ['auth']], function ($router) {
+    $router->get('/', [
+        'uses' => 'CategoryController@index',
+        'middleware' => [
+            'permission:category.index'
+        ]
+    ]);
+
+    $router->post('/', [
+        'uses' => 'CategoryController@store',
+        'middleware' => [
+            'permission:category.create'
+        ]
+    ]);
+    
+    $router->patch('/{id:\d+}', [
+        'uses' => 'CategoryController@update',
+        'middleware' => [
+            'permission:category.update'
+        ]
+    ]);
+
+    $router->delete('/{id:\d+}', [
+        'uses' => 'CategoryController@destroy',
+        'middleware' => [
+            'permission:category.delete'
+        ]
+    ]);
+});
