@@ -262,3 +262,38 @@ $router->group(['prefix' => 'foods', 'middleware' => ['auth']], function ($route
         ]
     ]);
 });
+
+/*
+|--------------------------------------------------------------------------
+| Table Routes
+|--------------------------------------------------------------------------
+*/
+$router->group(['prefix' => 'tables', 'middleware' => ['auth']], function ($router) {
+    $router->get('/', [
+        'uses' => 'TableController@index',
+        'middleware' => [
+            'permission:table.index'
+        ]
+    ]);
+
+    $router->post('/', [
+        'uses' => 'TableController@store',
+        'middleware' => [
+            'permission:table.create'
+        ]
+    ]);
+    
+    $router->patch('/{id:\d+}', [
+        'uses' => 'TableController@update',
+        'middleware' => [
+            'permission:table.update'
+        ]
+    ]);
+
+    $router->delete('/{id:\d+}', [
+        'uses' => 'TableController@destroy',
+        'middleware' => [
+            'permission:table.delete'
+        ]
+    ]);
+});
