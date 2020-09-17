@@ -51,4 +51,30 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return [];
     }
+
+    /**
+     * Get validation rules.
+     *
+     * @param   bool   $edit
+     * @param   int  $id
+     *
+     * @return  array $rules
+     */
+    public static function validationRules(bool $edit = false, $id = null)
+    {
+        $rules = [
+            'username' => 'required|string|min:8|max:255|regex:/^[a-z]+([_a-z]+)?([0-9]+)?$/|unique:users,username',
+            'password' => 'string|min:8|max:255',
+        ];
+
+        if ($edit) {
+            $rules['username'] .= ',' . $id;
+        }
+
+        if (!$edit) {
+            $rules['password'] = 'required|' . $rules['password'];
+        }
+
+        return $rules;
+    }
 }

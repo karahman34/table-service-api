@@ -164,3 +164,52 @@ $router->group(['prefix' => 'categories', 'middleware' => ['auth']], function ($
         ]
     ]);
 });
+
+/*
+|--------------------------------------------------------------------------
+| User Routes
+|--------------------------------------------------------------------------
+*/
+$router->group(['prefix' => 'users', 'middleware' => ['auth']], function ($router) {
+    $router->get('/', [
+        'uses' => 'UserController@index',
+        'middleware' => [
+            'permission:user.index'
+        ]
+    ]);
+
+    $router->get('/{id:\d+}', [
+        'uses' => 'UserController@show',
+        'middleware' => [
+            'permission:user.show'
+        ]
+    ]);
+
+    $router->post('/', [
+        'uses' => 'UserController@store',
+        'middleware' => [
+            'permission:user.create'
+        ]
+    ]);
+
+    $router->post('/{id:\d+}/roles', [
+        'uses' => 'UserController@syncRoles',
+        'middleware' => [
+            'permission:user.update',
+        ]
+    ]);
+    
+    $router->patch('/{id:\d+}', [
+        'uses' => 'UserController@update',
+        'middleware' => [
+            'permission:user.update'
+        ]
+    ]);
+
+    $router->delete('/{id:\d+}', [
+        'uses' => 'UserController@destroy',
+        'middleware' => [
+            'permission:user.delete'
+        ]
+    ]);
+});
