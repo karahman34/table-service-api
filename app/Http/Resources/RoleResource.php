@@ -21,9 +21,6 @@ class RoleResource extends JsonResource
             'name' => $this->name,
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
-            'users' => $this->users->map(function (User $user) {
-                return (new UserResource($user));
-            }),
             'permissions' => $this->permissions->map(function (Permission $permission) {
                 return [
                     'id' => $permission->id,

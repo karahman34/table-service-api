@@ -21,9 +21,6 @@ class PermissionResource extends JsonResource
             'name' => $this->name,
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
-            'users' => $this->users->map(function (User $user) {
-                return (new UserResource($user));
-            }),
             'roles' => $this->roles->map(function (Role $role) {
                 return [
                     'id' => $role->id,
