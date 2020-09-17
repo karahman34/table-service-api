@@ -127,14 +127,13 @@ class PermissionController extends Controller
     public function syncRoles(Request $request, $id)
     {
         $this->validate($request, [
-            'roles_ids' => 'nullable|array',
+            'roles_ids' => 'present|array',
             'roles_ids.*' => 'regex:/^\d+$/',
-            'has_no_roles' => 'nullable|in:y,n'
         ]);
 
         try {
             $roles_ids = $request->get('roles_ids');
-            if ($request->get('has_no_roles') == 'y') {
+            if (is_null($roles_ids)) {
                 $roles_ids = [];
             }
             
