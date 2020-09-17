@@ -213,3 +213,52 @@ $router->group(['prefix' => 'users', 'middleware' => ['auth']], function ($route
         ]
     ]);
 });
+
+/*
+|--------------------------------------------------------------------------
+| Food Routes
+|--------------------------------------------------------------------------
+*/
+$router->group(['prefix' => 'foods', 'middleware' => ['auth']], function ($router) {
+    $router->get('/', [
+        'uses' => 'FoodController@index',
+        'middleware' => [
+            'permission:food.index'
+        ]
+    ]);
+
+    $router->get('/{id:\d+}', [
+        'uses' => 'FoodController@show',
+        'middleware' => [
+            'permission:food.show'
+        ]
+    ]);
+
+    $router->post('/', [
+        'uses' => 'FoodController@store',
+        'middleware' => [
+            'permission:food.create'
+        ]
+    ]);
+    
+    $router->patch('/{id:\d+}', [
+        'uses' => 'FoodController@update',
+        'middleware' => [
+            'permission:food.update'
+        ]
+    ]);
+
+    $router->patch('/{id:\d+}/update-image', [
+        'uses' => 'FoodController@updateImage',
+        'middleware' => [
+            'permission:food.update'
+        ]
+    ]);
+
+    $router->delete('/{id:\d+}', [
+        'uses' => 'FoodController@destroy',
+        'middleware' => [
+            'permission:food.delete'
+        ]
+    ]);
+});
