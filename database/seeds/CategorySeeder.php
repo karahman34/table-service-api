@@ -19,7 +19,8 @@ class CategorySeeder extends Seeder
             'noodle',
             'sweet',
             'hot',
-            'drink'
+            'drink',
+            'main_dish',
         ];
 
         foreach ($categories as $category) {
