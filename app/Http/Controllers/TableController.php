@@ -34,7 +34,7 @@ class TableController extends Controller
             $query = Table::query();
 
             $limit = $request->get('limit', 20);
-            $tables = $limit > 0 ? $query->paginate($limit) : $query->get();
+            $tables = (int) $limit > 0 ? $query->paginate($limit) : $query->get();
             
             return (new TablesCollection($tables))
                         ->additional(

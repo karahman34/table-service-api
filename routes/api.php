@@ -339,3 +339,31 @@ $router->group(['prefix' => 'orders', 'middleware' => ['auth']], function ($rout
         ]
     ]);
 });
+
+/*
+|--------------------------------------------------------------------------
+| Transaction Routes
+|--------------------------------------------------------------------------
+*/
+$router->group(['prefix' => 'transactions', 'middleware' => ['auth']], function ($router) {
+    $router->get('/', [
+        'uses' => 'TransactionController@index',
+        'middleware' => [
+            'permission:transaction.index'
+        ]
+    ]);
+
+    $router->post('/', [
+        'uses' => 'TransactionController@store',
+        'middleware' => [
+            'permission:transaction.create'
+        ]
+    ]);
+
+    $router->delete('/{id:\d+}', [
+        'uses' => 'TransactionController@destroy',
+        'middleware' => [
+            'permission:transaction.delete'
+        ]
+    ]);
+});
