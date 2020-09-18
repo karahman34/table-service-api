@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
@@ -23,9 +24,9 @@ class Order extends Model
      *
      * @return  BelongsTo
      */
-    public function user()
+    public function customer()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\User', 'user_id');
     }
 
     /**
@@ -36,5 +37,15 @@ class Order extends Model
     public function table()
     {
         return $this->belongsTo('App\Table');
+    }
+
+    /**
+     * Relation one to many to "DetailOrder" Model.
+     *
+     * @return  HasMany
+     */
+    public function details()
+    {
+        return $this->hasMany('App\DetailOrder', 'order_id');
     }
 }

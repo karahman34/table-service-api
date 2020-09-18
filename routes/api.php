@@ -297,3 +297,45 @@ $router->group(['prefix' => 'tables', 'middleware' => ['auth']], function ($rout
         ]
     ]);
 });
+
+/*
+|--------------------------------------------------------------------------
+| Table Routes
+|--------------------------------------------------------------------------
+*/
+$router->group(['prefix' => 'orders', 'middleware' => ['auth']], function ($router) {
+    $router->get('/', [
+        'uses' => 'OrderController@index',
+        'middleware' => [
+            'permission:order.index'
+        ]
+    ]);
+
+    $router->get('/{id:\d+}', [
+        'uses' => 'OrderController@show',
+        'middleware' => [
+            'permission:order.show'
+        ]
+    ]);
+
+    $router->post('/', [
+        'uses' => 'OrderController@store',
+        'middleware' => [
+            'permission:order.create'
+        ]
+    ]);
+
+    $router->patch('/{id:\d+}/serve-food', [
+        'uses' => 'OrderController@serveFood',
+        'middleware' => [
+            'permission:order.update'
+        ]
+    ]);
+
+    $router->delete('/{id:\d+}', [
+        'uses' => 'OrderController@destroy',
+        'middleware' => [
+            'permission:order.delete'
+        ]
+    ]);
+});
