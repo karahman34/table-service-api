@@ -88,4 +88,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasMany('App\Order');
     }
+
+    /**
+     * Relation one to many tp "Transaction" Model.
+     *
+     * @return  HasMany
+     */
+    public function transactions()
+    {
+        return $this->hasMany('App\Transaction');
+    }
 }
