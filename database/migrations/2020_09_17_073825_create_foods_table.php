@@ -18,8 +18,8 @@ class CreateFoodsTable extends Migration
             $table->foreignId('category_id');
             $table->string('name');
             $table->string('description');
-            $table->decimal('price', 10, 2);
-            $table->decimal('discount', 5, 2);
+            $table->unsignedDecimal('price', 10, 0);
+            $table->unsignedDecimal('discount', 5, 0);
             $table->string('image');
             $table->timestamps();
         });
