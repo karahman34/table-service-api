@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Food;
 use App\Helpers\Transformer;
 use App\Http\Filters\FoodFilter;
@@ -166,9 +167,14 @@ class FoodController extends Controller
         $this->validate($request, $rules);
 
         try {
+            $category = Category::whereId($request->get('category_id'))->count();
+            if ($category <= 0) {
+                return Transformer::fail('Category not found.', null, 404);
+            }
+
             $food =Food::findOrFail($id);
             $food->update(
-                $request->only('name', 'description', 'price', 'discount')
+                $request->only('name', 'description', 'price', 'discount', 'category_id')
             );
 
             return Transformer::ok(
