@@ -21,13 +21,11 @@ class UserResource extends JsonResource
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
             'roles' => $this->roles->map(function (Role $role) {
-                return [
-                    'id' => $role->id,
-                    'name' => $role->name,
-                    'created_at' => $role->created_at->toDateTimeString(),
-                    'updated_at' => $role->updated_at->toDateTimeString(),
-                ];
+                return $role->name;
             }),
+            'permissions' => $this->getPermissionsViaRoles()->map(function ($permission) {
+                return $permission->name;
+            })
         ];
     }
 }
