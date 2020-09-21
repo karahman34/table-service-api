@@ -28,7 +28,10 @@ class FoodFilter extends Filter
 
         $sort_able_fields = [
             'id' => 'id',
-            'username' => 'username',
+            'name' => 'name',
+            'description' => 'description',
+            'price' => 'price',
+            'discount' => 'discount',
             'created_at' => 'created_at',
             'updated_at' => 'updated_at',
         ];
