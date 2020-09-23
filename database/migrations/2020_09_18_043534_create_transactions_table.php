@@ -15,9 +15,9 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('order_id')->constrained();
-            $table->unsignedDecimal('total_price', 10, 2);
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('order_id')->nullable()->constrained()->onDelete('set null');
+            $table->unsignedDecimal('total_price', 10, 0);
             $table->timestamps();
         });
     }
