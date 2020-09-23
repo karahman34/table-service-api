@@ -84,7 +84,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, Category::validationRules());
+        $this->validate($request, Category::validationRules(true, $id));
 
         try {
             $category = Category::findOrFail($id);
