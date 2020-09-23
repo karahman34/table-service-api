@@ -189,10 +189,7 @@ class OrderController extends Controller
 
             $order->delete();
 
-            return Transformer::ok(
-                'Success to delete order data.',
-                ['order' => new OrderResource($order)]
-            );
+            return Transformer::ok('Success to delete order data.', );
         } catch (ModelNotFoundException $th) {
             return $this->notFoundResponse();
         } catch (\Throwable $th) {
