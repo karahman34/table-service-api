@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Transaction;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class TransactionsCollection extends ResourceCollection
@@ -14,6 +15,8 @@ class TransactionsCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return $this->resource->map(function (Transaction $transaction) {
+            return new TransactionResource($transaction);
+        });
     }
 }
