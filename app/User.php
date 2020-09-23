@@ -70,6 +70,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
         if ($edit) {
             $rules['username'] .= ',' . $id;
+            $rules['password'] = 'nullable|' . $rules['password'];
         }
 
         if (!$edit) {
