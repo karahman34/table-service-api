@@ -45,6 +45,7 @@ class RolesPermissionsSeeder extends Seeder
             'owner' => [
                 'food.index', 'food.show', 'food.import', 'food.export',
                 'order.index', 'order.show', 'order.import', 'order.export',
+                'user.index', 'user.show', 'user.import', 'user.export',
                 'transaction.index', 'transaction.import', 'transaction.export',
                 'role.index', 'role.show', 'role.import', 'role.export',
                 'permissions.index', 'permissions.show', 'permissions.import', 'permissions.export',
