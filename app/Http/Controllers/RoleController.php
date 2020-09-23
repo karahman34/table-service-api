@@ -58,7 +58,7 @@ class RoleController extends Controller
             $query = RoleFilter::collection($request, $query);
 
             $limit = $request->get('limit', 15);
-            $roles = $limit > 0 ? $query->paginate($limit) : $query->all();
+            $roles = $limit > 1 ? $query->paginate($limit) : $query->get();
 
             return (new RolesCollection($roles))
                         ->additional(Transformer::meta(true, 'Success to get roles collection.'));

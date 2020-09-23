@@ -58,7 +58,7 @@ class PermissionController extends Controller
             $query = PermissionFilter::collection($request, $query);
 
             $limit = $request->get('limit', 15);
-            $permissions = $limit > 0 ? $query->paginate($limit) : $query->all();
+            $permissions = $limit > 1 ? $query->paginate($limit) : $query->get();
 
             return (new PermissionsCollection($permissions))
                         ->additional(Transformer::meta(true, 'Success to get permissions collection.'));

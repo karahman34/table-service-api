@@ -28,7 +28,7 @@ class TransactionController extends Controller
             $query = TransactionFilter::collection($request, $query);
 
             $limit = (int) $request->get('limit', 15);
-            $transactions = $limit > 0 ? $query->paginate($limit) : $query->get();
+            $transactions = $limit > 1 ? $query->paginate($limit) : $query->get();
 
             return (new TransactionsCollection($transactions))
                         ->additional(
