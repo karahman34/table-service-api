@@ -300,7 +300,7 @@ $router->group(['prefix' => 'tables', 'middleware' => ['auth']], function ($rout
 
 /*
 |--------------------------------------------------------------------------
-| Table Routes
+| Orders Routes
 |--------------------------------------------------------------------------
 */
 $router->group(['prefix' => 'orders', 'middleware' => ['auth']], function ($router) {
@@ -325,6 +325,13 @@ $router->group(['prefix' => 'orders', 'middleware' => ['auth']], function ($rout
         ]
     ]);
 
+    $router->post('/{id:\d+}/details/{detailId:\d+}', [
+        'uses' => 'OrderController@foodServed',
+        'middleware' => [
+            'permission:order.update'
+        ]
+    ]);
+
     $router->patch('/{id:\d+}/serve-food', [
         'uses' => 'OrderController@serveFood',
         'middleware' => [
@@ -334,6 +341,13 @@ $router->group(['prefix' => 'orders', 'middleware' => ['auth']], function ($rout
 
     $router->delete('/{id:\d+}', [
         'uses' => 'OrderController@destroy',
+        'middleware' => [
+            'permission:order.delete'
+        ]
+    ]);
+
+    $router->delete('/{id:\d+}/details/{detailId:\d+}', [
+        'uses' => 'OrderController@destroyDetail',
         'middleware' => [
             'permission:order.delete'
         ]

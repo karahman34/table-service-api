@@ -196,4 +196,58 @@ class OrderController extends Controller
             return Transformer::fail('Failed to delete order data.');
         }
     }
+
+    /**
+     * Update served column at detail table
+     *
+     * @param   int  $id
+     * @param   int  $detailId
+     *
+     * @return  JsonResponse
+     */
+    public function foodServed($id, $detailId)
+    {
+        try {
+            $detailOrder = DetailOrder::select('id')
+                                        ->where('order_id', $id)
+                                        ->whereId($detailId)
+                                        ->firstOrFail();
+
+            $detailOrder->update([
+                'served_at' => Carbon::now(),
+            ]);
+
+            return Transformer::ok('Success to update detail order data.', [
+                'order' => new OrderResource(Order::findOrFail($id))
+            ]);
+        } catch (ModelNotFoundException $th) {
+            return Transformer::fail('Detail order not found.', null, 404);
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to update detail order data.');
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyDetail($id, $detailId)
+    {
+        try {
+            $detailOrder = DetailOrder::select('id')
+                                        ->where('order_id', $id)
+                                        ->whereId($detailId)
+                                        ->firstOrFail();
+
+            $detailOrder->delete();
+
+            return Transformer::ok('Success to delete detail order data.', );
+        } catch (ModelNotFoundException $th) {
+            return Transformer::fail('Detail order not found.', null, 404);
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to delete detail order data.');
+        }
+    }
 }
