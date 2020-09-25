@@ -18,6 +18,7 @@ class CreateOrdersTable extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('table_id')->constrained();
             $table->enum('status', ['Y', 'N'])->default('N');
+            $table->enum('details_complete', ['Y', 'N'])->default('N');
             $table->timestamps();
         });
     }

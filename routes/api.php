@@ -339,13 +339,6 @@ $router->group(['prefix' => 'orders', 'middleware' => ['auth']], function ($rout
         ]
     ]);
 
-    $router->patch('/{id:\d+}/serve-food', [
-        'uses' => 'OrderController@serveFood',
-        'middleware' => [
-            'permission:order.update'
-        ]
-    ]);
-
     $router->delete('/{id:\d+}', [
         'uses' => 'OrderController@destroy',
         'middleware' => [

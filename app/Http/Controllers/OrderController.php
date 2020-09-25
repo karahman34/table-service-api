@@ -114,6 +114,10 @@ class OrderController extends Controller
                     'table_id' => $request->get('table_id'),
                     'status' => 'N'
                 ]);
+            } else {
+                $order->update([
+                    'details_complete' => 'N',
+                ]);
             }
 
             foreach ($request->get('details') as $detail) {
@@ -129,7 +133,6 @@ class OrderController extends Controller
                 201
             );
         } catch (\Throwable $th) {
-            return $th;
             return Transformer::fail('Failed to make an order.');
         }
     }
@@ -155,40 +158,6 @@ class OrderController extends Controller
             return $this->notFoundResponse();
         } catch (\Throwable $th) {
             return Transformer::fail('Failed to get order details.');
-        }
-    }
-
-    /**
-     * Update serve column at detail order
-     *
-     * @param   Request  $request
-     * @param   int   $id
-     *
-     * @return  JsonResponse
-     */
-    public function serveFood(Request $request, $id)
-    {
-        $this->validate($request, [
-            '_detail_id' => 'required|regex:/^\d+$/',
-        ]);
-
-        try {
-            $detail_order = DetailOrder::where('order_id', $id)
-                                        ->whereId($request->get('_detail_id'))
-                                        ->firstOrFail();
-
-            $detail_order->update([
-                'served_at' => Carbon::now()
-            ]);
-
-            return Transformer::ok(
-                'Success to update data.',
-                null
-            );
-        } catch (ModelNotFoundException $th) {
-            return Transformer::fail('Order or detail order not found.', null, 404);
-        } catch (\Throwable $th) {
-            return Transformer::fail('Failed to update data.');
         }
     }
 
@@ -232,6 +201,19 @@ class OrderController extends Controller
             $detailOrder->update([
                 'served_at' => Carbon::now(),
             ]);
+
+            // Check is order complete
+            $non_served_foods = DetailOrder::where('order_id', $id)
+                                            ->whereNull('served_at')
+                                            ->join('orders', 'detail_orders.order_id', 'orders.id')
+                                            ->where('orders.status', 'N')
+                                            ->count();
+
+            if ($non_served_foods == 0) {
+                Order::whereId($id)->update([
+                    'details_complete' => 'Y',
+                ]);
+            }
 
             return Transformer::ok('Success to update detail order data.', [
                 'order' => new OrderResource(Order::findOrFail($id))
