@@ -52,6 +52,22 @@ class OrderController extends Controller
     }
 
     /**
+    * Get new order.
+    *
+    * @return \Illuminate\Http\Response
+    */
+    public function newOrder()
+    {
+        try {
+            $details_orders = DetailOrder::whereNull('served_at')->get();
+
+            return Transformer::ok('Success to get orders collection.', $details_orders);
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to get orders collection.');
+        }
+    }
+
+    /**
      * Check if the table is valid or not.
      *
      * @param   int|string  $table_id

@@ -311,6 +311,13 @@ $router->group(['prefix' => 'orders', 'middleware' => ['auth']], function ($rout
         ]
     ]);
 
+    $router->get('/new', [
+        'uses' => 'OrderController@newOrder',
+        'middleware' => [
+            'permission:order.index'
+        ]
+    ]);
+
     $router->get('/{id:\d+}', [
         'uses' => 'OrderController@show',
         'middleware' => [
