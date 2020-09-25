@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Transformer;
+use App\Http\Filters\TableFilter;
 use App\Http\Resources\TableResource;
 use App\Http\Resources\TablesCollection;
 use App\Table;
@@ -32,9 +33,10 @@ class TableController extends Controller
     {
         try {
             $query = Table::query();
+            $query = TableFilter::collection($request, $query);
 
             $limit = $request->get('limit', 20);
-            $tables = (int) $limit > 0 ? $query->paginate($limit) : $query->get();
+            $tables = (int) $limit > 1 ? $query->paginate($limit) : $query->get();
             
             return (new TablesCollection($tables))
                         ->additional(
