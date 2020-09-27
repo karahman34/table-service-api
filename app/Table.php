@@ -29,11 +29,11 @@ class Table extends Model
     {
         $rules = [
             'number' => 'required|regex:/^[1-9]+([0-9]+)?$/|unique:tables,number',
-            'available' => 'nullable|in:y,n'
         ];
 
         if ($edit) {
             $rules['number'] .= ',' . $id;
+            $rules['available'] = 'required|string|in:Y,N';
         }
 
         return $rules;
