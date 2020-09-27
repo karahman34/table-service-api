@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Transformer;
 use App\Http\Filters\TableFilter;
+use App\Http\Resources\OrderResource;
 use App\Http\Resources\TableResource;
 use App\Http\Resources\TablesCollection;
+use App\Order;
 use App\Table;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class TableController extends Controller
@@ -76,6 +79,32 @@ class TableController extends Controller
     }
 
     /**
+     * Get order details
+     *
+     * @param   int  $id
+     *
+     * @return  JsonResponse
+     */
+    public function getOrder($id)
+    {
+        try {
+            $order = Order::select('orders.*')
+                            ->join('tables', 'orders.table_id', 'tables.id')
+                            ->where('tables.id', $id)
+                            ->where('tables.available', 'N')
+                            ->where('orders.status', 'N')
+                            ->with('details')
+                            ->first();
+
+            return Transformer::ok('Success to get order details.', [
+                'order' => is_null($order) ? null : new OrderResource(($order))
+            ]);
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to get order details.');
+        }
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -91,7 +120,7 @@ class TableController extends Controller
             
             $table->update([
                 'number' => $request->get('number'),
-                'available' => strtoupper($request->get('available'))
+                'available' => strtoupper($request->get('available')),
             ]);
 
             return Transformer::ok(

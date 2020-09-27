@@ -276,6 +276,13 @@ $router->group(['prefix' => 'tables', 'middleware' => ['auth']], function ($rout
         ]
     ]);
 
+    $router->get('/{id:\d+}/order', [
+        'uses' => 'TableController@getOrder',
+        'middleware' => [
+            'permission:table.show'
+        ]
+    ]);
+
     $router->post('/', [
         'uses' => 'TableController@store',
         'middleware' => [
