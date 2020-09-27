@@ -84,6 +84,10 @@ class TransactionController extends Controller
                 $order->update([
                     'status' => 'Y'
                 ]);
+
+                $order->table->update([
+                    'available' => 'Y',
+                ]);
             }
 
             return Transformer::ok(
