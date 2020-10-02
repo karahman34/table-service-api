@@ -20,7 +20,7 @@ class AuthController extends Controller
     /**
      * Token response structure.
      *
-     * @param   string  $token
+     * @param  string $token
      *
      * @return  array
      */
@@ -36,7 +36,7 @@ class AuthController extends Controller
     /**
      * Login user.
      *
-     * @param   Request  $request
+     * @param  Request  $request
      *
      * @return  JsonResponse
      */
@@ -63,7 +63,6 @@ class AuthController extends Controller
                 200
             );
         } catch (\Throwable $th) {
-            return $th;
             return Transformer::fail('Failed to authenticated user.');
         }
     }
@@ -78,7 +77,7 @@ class AuthController extends Controller
         return Transformer::ok(
             'Success to get user details.',
             [
-                'user' => new UserResource(auth()->user())
+                'user' => new UserResource(auth()->user()),
             ],
             200
         );
