@@ -53,10 +53,28 @@ class FoodSeeder extends Seeder
                 'image' => Food::$image_folder . '/' . 'mie_goreng_jawa.jpg',
                 'category_id' => 4,
             ],
+            [
+                'name' => 'Tahu gejrot',
+                'price' => 10000,
+                'description' => 'example description tahu gejrot',
+                'discount' => 0,
+                'image' => Food::$image_folder . '/' . 'tahu-gejrot.jpg',
+                'category_id' => 1,
+            ],
+            [
+                'name' => 'Sate maranggi',
+                'price' => 1000,
+                'description' => 'example description tahu gejrot',
+                'discount' => 0,
+                'image' => Food::$image_folder . '/' . 'sate_maranggi.jpg',
+                'category_id' => 1,
+            ],
         ]);
 
-        $foods->each(function ($food) {
-            Food::create($food);
-        });
+        for ($i=1; $i <= 4; $i++) {
+            $foods->shuffle()->each(function ($food) {
+                Food::create($food);
+            });
+        }
     }
 }
