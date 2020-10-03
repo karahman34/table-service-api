@@ -18,6 +18,7 @@ class CreateDetailOrdersTable extends Migration
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
             $table->foreignId('food_id')->constrained('foods');
             $table->unsignedTinyInteger('qty');
+        $table->string('tips')->nullable();
             $table->timestamp('served_at')->nullable();
             $table->timestamps();
         });

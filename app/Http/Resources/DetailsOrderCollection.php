@@ -20,6 +20,7 @@ class DetailsOrderCollection extends ResourceCollection
                 'id' => $detailOrder->id,
                 'food' => new FoodResource($detailOrder->food),
                 'qty' => $detailOrder->qty,
+                'tips' => $detailOrder->tips,
                 'served_at' => is_null($detailOrder->served_at) ? null : $detailOrder->served_at->toDateTimeString(),
                 'created_at' => $detailOrder->created_at->toDateTimeString(),
                 'updated_at' => $detailOrder->updated_at->toDateTimeString(),

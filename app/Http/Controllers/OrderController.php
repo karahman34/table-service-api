@@ -94,6 +94,7 @@ class OrderController extends Controller
             'details' => 'required|array',
             'details.*.food_id' => 'required|regex:/^\d+$/',
             'details.*.qty' => 'required|regex:/^[1-9]+([0-9]+)?$/',
+            'details.*.tips' => 'required|string|max:255',
         ]);
 
         try {
@@ -124,6 +125,7 @@ class OrderController extends Controller
                 $order->details()->create([
                     'food_id' => $detail['food_id'],
                     'qty' => $detail['qty'],
+                    'tips' => $detail['tips'],
                 ]);
             }
 

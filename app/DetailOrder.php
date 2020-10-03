@@ -16,6 +16,7 @@ class DetailOrder extends Model
         'order_id',
         'food_id',
         'qty',
+        'tips',
         'served_at',
     ];
 
