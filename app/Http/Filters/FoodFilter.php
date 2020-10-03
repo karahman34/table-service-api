@@ -16,6 +16,32 @@ class FoodFilter extends Filter
      */
     public static function collection(Request $request, $query)
     {
+        if ($request->has('filter')) {
+            // new, random, popular, name
+            $filterQuery = strtolower($request->get('filter'));
+
+            switch ($filterQuery) {
+                case 'new':
+                    $query->orderBy('id', 'desc');
+                break;
+                
+                case 'random':
+                    $query->inRandomOrder();
+                    break;
+
+                case 'name':
+                    $query->orderBy('name', 'asc');
+                    break;
+
+                case 'popular':
+                    $query->select('foods.*')
+                            ->join('detail_orders', 'foods.id', 'detail_orders.food_id')
+                            ->orderByRaw('COUNT(detail_orders.food_id) DESC')
+                            ->groupBy('detail_orders.food_id');
+                    break;
+            }
+        }
+
         $search_able_fields = [
             'id' => 'id',
             'name' => 'name',
