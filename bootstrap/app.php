@@ -62,6 +62,7 @@ $app->configure('app');
 $app->configure('auth');
 $app->configure('permission');
 $app->configure('cors');
+$app->configure('database');
 
 $app->alias('cache', \Illuminate\Cache\CacheManager::class);
 
