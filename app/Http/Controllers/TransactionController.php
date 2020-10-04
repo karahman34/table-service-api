@@ -9,6 +9,7 @@ use App\Http\Resources\TransactionsCollection;
 use App\Order;
 use App\Transaction;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -97,6 +98,31 @@ class TransactionController extends Controller
             );
         } catch (\Throwable $th) {
             return Transformer::fail('Failed to make a transaction.');
+        }
+    }
+
+    /**
+     * Get transaction details.
+     *
+     * @param   int  $id
+     *
+     * @return  JsonResponse
+     */
+    public function show($id)
+    {
+        try {
+            $transaction = Transaction::with('order', 'order.details')
+                                        ->whereId($id)
+                                        ->firstOrFail();
+
+            return (new TransactionResource($transaction))
+                        ->additional(
+                            Transformer::meta(true, 'Success to get transaction details.')
+                        );
+        } catch (ModelNotFoundException $th) {
+            return Transformer::fail('Transaction not found.', null, 404);
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to get transaction details.');
         }
     }
 

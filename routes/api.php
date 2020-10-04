@@ -381,6 +381,13 @@ $router->group(['prefix' => 'transactions', 'middleware' => ['auth']], function 
         ]
     ]);
 
+    $router->get('/{id:\d+}', [
+        'uses' => 'TransactionController@show',
+        'middleware' => [
+            'permission:transaction.show'
+        ]
+    ]);
+
     $router->post('/', [
         'uses' => 'TransactionController@store',
         'middleware' => [
