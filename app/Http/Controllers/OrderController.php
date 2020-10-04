@@ -68,20 +68,6 @@ class OrderController extends Controller
     }
 
     /**
-     * Check if the table is valid or not.
-     *
-     * @param   int|string  $table_id
-     *
-     * @return  bool
-     */
-    private function validateTable($table_id)
-    {
-        return Table::whereId($table_id)->where('available', 'N')->count() > 0
-            ? true
-            : false;
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -90,29 +76,30 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'table_id' => 'required|regex:/^\d+$/',
+            'table_number' => 'required|regex:/^\d+$/',
             'details' => 'required|array',
             'details.*.food_id' => 'required|regex:/^\d+$/',
             'details.*.qty' => 'required|regex:/^[1-9]+([0-9]+)?$/',
-            'details.*.tips' => 'required|string|max:255',
+            'details.*.tips' => 'present|nullable|string|max:255',
         ]);
 
         try {
-            if (!$this->validateTable($request->get('table_id'))) {
-                return Transformer::fail('Table is not valid.', null, 400);
+            $table = Table::where('number', $request->get('table_number'))->where('available', 'n')->first();
+            if (!$table) {
+                return Transformer::fail('Table is not found or not ready.', null, 400);
             }
 
             $order = Order::select('orders.*')
                             ->where('status', 'N')
                             ->join('tables', 'orders.table_id', 'tables.id')
-                            ->where('tables.id', $request->get('table_id'))
+                            ->where('tables.id', $table->id)
                             ->where('tables.available', 'N')
                             ->first();
             
             if (!$order) {
                 $order = Order::create([
                     'user_id' => $request->user()->id,
-                    'table_id' => $request->get('table_id'),
+                    'table_id' => $table->id,
                     'status' => 'N'
                 ]);
             } else {
