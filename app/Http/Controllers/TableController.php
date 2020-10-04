@@ -105,6 +105,38 @@ class TableController extends Controller
     }
 
     /**
+     * Set Table
+     *
+     * @param   Request  $request
+     *
+     * @return  JsonResponse
+     */
+    public function setTable(Request $request)
+    {
+        $this->validate($request, [
+            'number' => 'required|regex:/^[1-9]+([0-9]+)?$/',
+        ]);
+
+        try {
+            $table = Table::where('number', $request->get('number'))->firstOrFail();
+            
+            if (strtolower($table->available) === 'n') {
+                return Transformer::fail('The table is busy.', null, 400);
+            }
+
+            $table->update([
+                'available' => 'n',
+            ]);
+
+            return Transformer::ok('Success to set table.', null, 200);
+        } catch (ModelNotFoundException $th) {
+            return $this->notFoundResponse();
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to set table.');
+        }
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

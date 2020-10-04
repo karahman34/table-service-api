@@ -289,6 +289,13 @@ $router->group(['prefix' => 'tables', 'middleware' => ['auth']], function ($rout
             'permission:table.create'
         ]
     ]);
+
+    $router->post('/set-table', [
+        'uses' => 'TableController@setTable',
+        'middleware' => [
+            'permission:table.update'
+        ]
+    ]);
     
     $router->patch('/{id:\d+}', [
         'uses' => 'TableController@update',
