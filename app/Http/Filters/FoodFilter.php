@@ -17,12 +17,16 @@ class FoodFilter extends Filter
     public static function collection(Request $request, $query)
     {
         if ($request->has('filter')) {
-            // new, random, popular, name
+            // new, random, popular, name, price
             $filterQuery = strtolower($request->get('filter'));
 
             switch ($filterQuery) {
                 case 'new':
                     $query->orderBy('id', 'desc');
+                break;
+
+                case 'price':
+                    $query->orderBy('price', 'asc');
                 break;
                 
                 case 'random':
@@ -42,24 +46,25 @@ class FoodFilter extends Filter
             }
         }
 
-        $search_able_fields = [
-            'id' => 'id',
-            'name' => 'name',
-            'description' => 'description',
-            'price' => 'price',
-            'discount' => 'discount',
-        ];
+        if ($request->has('categories')) {
+            // id1,id2,id3
+            $categories = $request->get('categories');
+            $query->whereIn('foods.category_id', explode(',', $categories));
+        }
 
-        $query = self::search($request, $search_able_fields, $query);
+        if ($request->has('search')) {
+            $search = $request->get('search');
+            $query->where('name', 'like', "%{$search}%");
+        }
 
         $sort_able_fields = [
-            'id' => 'id',
-            'name' => 'name',
-            'description' => 'description',
-            'price' => 'price',
-            'discount' => 'discount',
-            'created_at' => 'created_at',
-            'updated_at' => 'updated_at',
+            'id' => 'foods.id',
+            'name' => 'foods.name',
+            'description' => 'foods.description',
+            'price' => 'foods.price',
+            'discount' => 'foods.discount',
+            'created_at' => 'foods.created_at',
+            'updated_at' => 'foods.updated_at',
         ];
 
         $query = self::sort($request, $sort_able_fields, $query);
