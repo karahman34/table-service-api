@@ -16,9 +16,9 @@ class CreateDetailOrdersTable extends Migration
         Schema::create('detail_orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
-            $table->foreignId('food_id')->constrained('foods');
+            $table->foreignId('food_id')->nullable()->constrained('foods')->onDelete('set null');
             $table->unsignedTinyInteger('qty');
-        $table->string('tips')->nullable();
+            $table->string('tips')->nullable();
             $table->timestamp('served_at')->nullable();
             $table->timestamps();
         });
