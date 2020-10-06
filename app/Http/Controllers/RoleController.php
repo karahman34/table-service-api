@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\RolesExport;
 use App\Helpers\Transformer;
 use App\Http\Filters\RoleFilter;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\RolesCollection;
+use App\Imports\RolesImport;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
@@ -64,6 +67,48 @@ class RoleController extends Controller
                         ->additional(Transformer::meta(true, 'Success to get roles collection.'));
         } catch (\Throwable $th) {
             return Transformer::fail('Failed to get roles collection.');
+        }
+    }
+
+    /**
+     * Export the resources.
+     * 
+     * @param  Request  $request
+     *
+     * @return  \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    {
+        $this->validate($request, [
+            'type' => 'required|string|in:xlsx,csv'
+        ]);
+
+        try {
+            return Excel::download(new RolesExport, "roles.{$request->get('type')}");
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to export roles collection.');
+        }
+    }
+
+    /**
+     * Import data from file.
+     *
+     * @param   Request  $request
+     *
+     * @return  JsonResponse
+     */
+    public function import(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'required|file|mimes:xlsx,csv'
+        ]);
+
+        try {
+            Excel::import(new RolesImport, $request->file('file'));
+
+            return Transformer::ok('Success to import permissions data.');
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to import permissions data.');
         }
     }
 

@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\UsersExport;
 use App\Helpers\Transformer;
 use App\Http\Filters\UserFilter;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UsersCollection;
+use App\Imports\UsersImport;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -45,6 +48,48 @@ class UserController extends Controller
                         );
         } catch (\Throwable $th) {
             return Transformer::fail('Failed to get users collection.');
+        }
+    }
+
+    /**
+     * Export the resources.
+     *
+     * @param  Request  $request
+     *
+     * @return  \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    {
+        $this->validate($request, [
+            'type' => 'required|string|in:xlsx,csv'
+        ]);
+
+        try {
+            return Excel::download(new UsersExport, "users.{$request->get('type')}");
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to export users collection.');
+        }
+    }
+
+    /**
+     * Import data from file.
+     *
+     * @param   Request  $request
+     *
+     * @return  JsonResponse
+     */
+    public function import(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'required|file|mimes:xlsx,csv'
+        ]);
+
+        try {
+            Excel::import(new UsersImport, $request->file('file'));
+
+            return Transformer::ok('Success to import users data.');
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to import users data.');
         }
     }
 

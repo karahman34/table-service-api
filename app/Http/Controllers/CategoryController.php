@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Exports\CategoriesExport;
 use App\Helpers\Transformer;
 use App\Http\Filters\CategoryFilter;
 use App\Http\Resources\CategoriesCollection;
 use App\Http\Resources\CategoryResource;
+use App\Imports\CategoriesImport;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends Controller
 {
@@ -45,6 +48,48 @@ class CategoryController extends Controller
                         );
         } catch (\Throwable $th) {
             return Transformer::fail('Failed to get categories collection.');
+        }
+    }
+
+    /**
+     * Export the resources.
+     *
+     * @param  Request  $request
+     *
+     * @return  \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    {
+        $this->validate($request, [
+            'type' => 'required|string|in:xlsx,csv'
+        ]);
+
+        try {
+            return Excel::download(new CategoriesExport, "categories.{$request->get('type')}");
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to export categories collection.');
+        }
+    }
+
+    /**
+     * Import data from file.
+     *
+     * @param   Request  $request
+     *
+     * @return  JsonResponse
+     */
+    public function import(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'required|file|mimes:xlsx,csv'
+        ]);
+
+        try {
+            Excel::import(new CategoriesImport, $request->file('file'));
+
+            return Transformer::ok('Success to import categories data.');
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to import categories data.');
         }
     }
 

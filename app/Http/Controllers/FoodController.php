@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Exports\FoodsExport;
 use App\Food;
 use App\Helpers\Transformer;
 use App\Http\Filters\FoodFilter;
 use App\Http\Resources\FoodResource;
 use App\Http\Resources\FoodsCollection;
+use App\Imports\FoodsImport;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FoodController extends Controller
 {
@@ -59,6 +62,48 @@ class FoodController extends Controller
                         );
         } catch (\Throwable $th) {
             return Transformer::fail('Failed to get foods collection.');
+        }
+    }
+
+    /**
+     * Export the resources.
+     *
+     * @param  Request  $request
+     *
+     * @return  \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    {
+        $this->validate($request, [
+            'type' => 'required|string|in:xlsx,csv'
+        ]);
+
+        try {
+            return Excel::download(new FoodsExport, "foods.{$request->get('type')}");
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to export foods collection.');
+        }
+    }
+
+    /**
+     * Import data from file.
+     *
+     * @param   Request  $request
+     *
+     * @return  JsonResponse
+     */
+    public function import(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'required|file|mimes:xlsx,csv'
+        ]);
+
+        try {
+            Excel::import(new FoodsImport, $request->file('file'));
+
+            return Transformer::ok('Success to import foods data.');
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to import foods data.');
         }
     }
 

@@ -48,6 +48,21 @@ $router->group(['prefix' => 'roles', 'middleware' => ['auth']], function ($route
             'permission:role.index'
         ]
     ]);
+
+    $router->get('/export', [
+        'uses' => 'RoleController@export',
+        'middleware' => [
+            'permission:role.export'
+        ]
+    ]);
+
+    $router->post('/import', [
+        'uses' => 'RoleController@import',
+        'middleware' => [
+            'permission:role.import'
+        ]
+    ]);
+
     $router->get('/{id:\d+}', [
         'uses' => 'RoleController@show',
         'middleware' => [
@@ -95,6 +110,21 @@ $router->group(['prefix' => 'permissions', 'middleware' => ['auth']], function (
             'permission:permission.index'
         ]
     ]);
+
+    $router->get('/export', [
+        'uses' => 'PermissionController@export',
+        'middleware' => [
+            'permission:permission.export'
+        ]
+    ]);
+
+    $router->post('/import', [
+        'uses' => 'PermissionController@import',
+        'middleware' => [
+            'permission:permission.import'
+        ]
+    ]);
+
     $router->get('/{id:\d+}', [
         'uses' => 'PermissionController@show',
         'middleware' => [
@@ -143,6 +173,20 @@ $router->group(['prefix' => 'categories', 'middleware' => ['auth']], function ($
         ]
     ]);
 
+    $router->get('/export', [
+        'uses' => 'CategoryController@export',
+        'middleware' => [
+            'permission:category.export'
+        ]
+    ]);
+
+    $router->post('/import', [
+        'uses' => 'CategoryController@import',
+        'middleware' => [
+            'permission:category.import'
+        ]
+    ]);
+
     $router->post('/', [
         'uses' => 'CategoryController@store',
         'middleware' => [
@@ -175,6 +219,20 @@ $router->group(['prefix' => 'users', 'middleware' => ['auth']], function ($route
         'uses' => 'UserController@index',
         'middleware' => [
             'permission:user.index'
+        ]
+    ]);
+
+    $router->get('/export', [
+        'uses' => 'UserController@export',
+        'middleware' => [
+            'permission:user.export'
+        ]
+    ]);
+
+    $router->post('/import', [
+        'uses' => 'UserController@import',
+        'middleware' => [
+            'permission:user.import'
         ]
     ]);
 
@@ -224,6 +282,20 @@ $router->group(['prefix' => 'foods', 'middleware' => ['auth']], function ($route
         'uses' => 'FoodController@index',
         'middleware' => [
             'permission:food.index'
+        ]
+    ]);
+
+    $router->get('/export', [
+        'uses' => 'FoodController@export',
+        'middleware' => [
+            'permission:food.export'
+        ]
+    ]);
+
+    $router->post('/import', [
+        'uses' => 'FoodController@import',
+        'middleware' => [
+            'permission:food.import'
         ]
     ]);
 
@@ -378,6 +450,20 @@ $router->group(['prefix' => 'transactions', 'middleware' => ['auth']], function 
         'uses' => 'TransactionController@index',
         'middleware' => [
             'permission:transaction.index'
+        ]
+    ]);
+
+    $router->get('/export', [
+        'uses' => 'TransactionController@export',
+        'middleware' => [
+            'permission:transaction.export'
+        ]
+    ]);
+
+    $router->post('/import', [
+        'uses' => 'TransactionController@import',
+        'middleware' => [
+            'permission:transaction.import'
         ]
     ]);
 

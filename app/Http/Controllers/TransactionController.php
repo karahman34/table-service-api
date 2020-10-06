@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TransactionsExport;
 use App\Helpers\Transformer;
 use App\Http\Filters\TransactionFilter;
 use App\Http\Resources\TransactionResource;
 use App\Http\Resources\TransactionsCollection;
+use App\Imports\TransactionsImport;
 use App\Order;
 use App\Transaction;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TransactionController extends Controller
 {
@@ -37,6 +40,48 @@ class TransactionController extends Controller
                         );
         } catch (\Throwable $th) {
             return Transformer::fail('Failed to get transactions collection.');
+        }
+    }
+
+    /**
+     * Export the resources.
+     * 
+     * @param  Request  $request
+     *
+     * @return  \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    {
+        $this->validate($request, [
+            'type' => 'required|string|in:xlsx,csv'
+        ]);
+
+        try {
+            return Excel::download(new TransactionsExport, "transactions.{$request->get('type')}");
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to export transactions collection.');
+        }
+    }
+
+    /**
+     * Import data from file.
+     *
+     * @param   Request  $request
+     *
+     * @return  JsonResponse
+     */
+    public function import(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'required|file|mimes:xlsx,csv'
+        ]);
+
+        try {
+            Excel::import(new TransactionsImport, $request->file('file'));
+
+            return Transformer::ok('Success to import transactions data.');
+        } catch (\Throwable $th) {
+            return Transformer::fail('Failed to import transactions data.');
         }
     }
 
