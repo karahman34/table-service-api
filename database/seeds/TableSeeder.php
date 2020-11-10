@@ -15,7 +15,7 @@ class TableSeeder extends Seeder
         for ($number = 1; $number <= 20; $number++) {
             Table::create([
                 'number' => $number,
-                'available' => rand(0, 1) === 0 ? 'N' : 'Y'
+                'available' => 'Y',
             ]);
         }
     }
