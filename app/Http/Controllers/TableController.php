@@ -9,6 +9,7 @@ use App\Http\Resources\TableResource;
 use App\Http\Resources\TablesCollection;
 use App\Order;
 use App\Table;
+use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -105,6 +106,44 @@ class TableController extends Controller
     }
 
     /**
+     * Check wheater user can set the table or not.
+     *
+     * @param   string  $username
+     * @param   string  $password
+     *
+     * @return  array|bool
+     */
+    private function canSetTable(string $username, string $password)
+    {
+        $errors = [
+            'message' => 'Username or password is invalid.',
+            'status' => 401,
+        ];
+
+        $user = User::select('id', 'username', 'password')->where('username', $username)->first();
+        if (!$user) {
+            return $errors;
+        }
+
+        $password_match = app('hash')->check($password, $user->password);
+        if (!$password_match) {
+            return $errors;
+        }
+        
+        $user_roles = $user->getPermissionsViaRoles()->pluck('name');
+        $user_has_permissions = in_array('table.update', $user_roles->toArray());
+
+        if (!$user_has_permissions) {
+            $errors['message'] = 'User does not have the right permissions.';
+            $errors['status'] = 403;
+
+            return $errors;
+        }
+
+        return true;
+    }
+
+    /**
      * Set Table
      *
      * @param   Request  $request
@@ -113,20 +152,41 @@ class TableController extends Controller
      */
     public function setTable(Request $request)
     {
-        $this->validate($request, [
-            'number' => 'required|regex:/^[1-9]+([0-9]+)?$/',
+        $payload = $this->validate($request, [
+            'number' => 'present|nullable|regex:/^[1-9]+([0-9]+)?$/',
+            'old_number' => 'present|nullable|string',
+            'username' => 'required|string',
+            'password' => 'required|string',
         ]);
 
         try {
-            $table = Table::where('number', $request->get('number'))->firstOrFail();
+            // Check is user can update the table.
+            $errors = $this->canSetTable($payload['username'], $payload['password']);
+            if ($errors !== true) {
+                return Transformer::fail($errors['message'], null, $errors['status']);
+            };
+
+            if (!is_null($payload['number'])) {
+                // Get table model
+                $table = Table::where('number', $request->get('number'))->firstOrFail();
             
-            if (strtolower($table->available) === 'n') {
-                return Transformer::fail('The table is busy.', null, 400);
+                if (strtolower($table->available) === 'n') {
+                    return Transformer::fail('The table is busy.', null, 400);
+                }
+    
+                // Update new table
+                $table->update([
+                    'available' => 'n',
+                ]);
             }
 
-            $table->update([
-                'available' => 'n',
-            ]);
+            if (!is_null($payload['old_number'])) {
+                Table::where('number', $payload['old_number'])
+                        ->where('available', 'N')
+                        ->update([
+                            'available' => 'Y'
+                        ]);
+            }
 
             return Transformer::ok('Success to set table.', null, 200);
         } catch (ModelNotFoundException $th) {

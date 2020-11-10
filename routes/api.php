@@ -363,10 +363,7 @@ $router->group(['prefix' => 'tables', 'middleware' => ['auth']], function ($rout
     ]);
 
     $router->post('/set-table', [
-        'uses' => 'TableController@setTable',
-        'middleware' => [
-            'permission:table.update'
-        ]
+        'uses' => 'TableController@setTable'
     ]);
     
     $router->patch('/{id:\d+}', [
