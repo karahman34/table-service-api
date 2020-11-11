@@ -17,6 +17,8 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+$router->post('broadcasting/auth', ['uses' => 'BroadcastController@authenticate']);
+
 /*
 |--------------------------------------------------------------------------
 | Auth Routes
