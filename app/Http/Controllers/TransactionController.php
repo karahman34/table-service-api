@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\RefreshTablesEvent;
+use App\Events\TransactionCompleteEvent;
 use App\Exports\TransactionsExport;
 use App\Helpers\Transformer;
 use App\Http\Filters\TransactionFilter;
@@ -45,7 +47,7 @@ class TransactionController extends Controller
 
     /**
      * Export the resources.
-     * 
+     *
      * @param  Request  $request
      *
      * @return  \Symfony\Component\HttpFoundation\BinaryFileResponse
@@ -135,6 +137,10 @@ class TransactionController extends Controller
                     'available' => 'Y',
                 ]);
             }
+
+            // Dispatch actions.
+            event(new RefreshTablesEvent());
+            event(new TransactionCompleteEvent($order->table));
 
             return Transformer::ok(
                 'Success to make a transaction.',

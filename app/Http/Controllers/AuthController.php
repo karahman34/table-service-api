@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\RefreshTablesEvent;
 use App\Helpers\Transformer;
 use App\Http\Resources\UserResource;
+use App\Table;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -101,10 +103,21 @@ class AuthController extends Controller
      *
      * @return JsonResponse
      */
-    public function logout()
+    public function logout(Request $request)
     {
         try {
             Auth::logout();
+
+            if ($request->has('number')) {
+                $table = Table::where('number', $request->get('number'))->where('available', 'N')->first();
+                if ($table) {
+                    $table->update([
+                        'available' => 'Y'
+                    ]);
+                }
+
+                event(new RefreshTablesEvent);
+            }
 
             return Transformer::ok('Success to logged out user.');
         } catch (\Throwable $th) {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\RefreshTablesEvent;
 use App\Helpers\Transformer;
 use App\Http\Filters\TableFilter;
 use App\Http\Resources\OrderResource;
@@ -187,6 +188,9 @@ class TableController extends Controller
                             'available' => 'Y'
                         ]);
             }
+
+            // Dispatch an action
+            event(new RefreshTablesEvent());
 
             return Transformer::ok('Success to set table.', null, 200);
         } catch (ModelNotFoundException $th) {
