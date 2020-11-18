@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DetailOrder;
+use App\Events\NewOrderEvent;
 use App\Helpers\Transformer;
 use App\Http\Filters\OrderFilter;
 use App\Http\Resources\OrderResource;
@@ -59,7 +60,10 @@ class OrderController extends Controller
     public function newOrder()
     {
         try {
-            $details_orders = DetailOrder::whereNull('served_at')->get();
+            $details_orders = DetailOrder::join('orders', 'detail_orders.order_id', 'orders.id')
+                                            ->where('orders.status', 'N')
+                                            ->whereNull('served_at')
+                                            ->get();
 
             return Transformer::ok('Success to get orders collection.', $details_orders);
         } catch (\Throwable $th) {
@@ -115,6 +119,8 @@ class OrderController extends Controller
                     'tips' => $detail['tips'],
                 ]);
             }
+
+            event(new NewOrderEvent);
 
             return Transformer::ok(
                 'Success to make an order.',
